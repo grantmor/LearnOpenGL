@@ -147,12 +147,6 @@ int main(int argc, char** argv)
 		1, 2, 3    // second triangle
 	};  
 
-    // Create the Vertex Array Object
-    u32 VAO;
-    glGenVertexArrays(1, &VAO);
-    // Bind the VAO - For some reason, the VAO should be bound before the VBO
-	// even though in a trivial example with one of each, it doesn't matter
-    glad_glBindVertexArray(VAO);
 
     // Create VBO 
     u32 VBO;
@@ -162,6 +156,11 @@ int main(int argc, char** argv)
     // Copy buffer to GPU
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // Create the Vertex Array Object
+    u32 VAO;
+    glGenVertexArrays(1, &VAO);
+    // Bind the VAO
+    glad_glBindVertexArray(VAO);
     // Describe the VAO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void*) 0);
     // Enable the VAO

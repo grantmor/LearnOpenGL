@@ -126,15 +126,25 @@ int main(int argc, char** argv)
     glDeleteShader(fragment_shader);
 
 
-/*
-    f32 verticies[] =
+    f32 vertices[] =
+    {
+        -1.5f, -0.5f, 0.0f,
+         0.0f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f,
+        1.5f, -0.5f, 0.0f,
+         0.0f, -0.5f, 0.0f,
+        1.0f,  0.5f, 0.0f
+    };
+	/*
+    f32 vertices2[] =
     {
         -0.5f, -0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
          0.0f,  0.5f, 0.0f
     };
-*/
+	*/
 
+	/*
 	f32 vertices[] = {
      0.5f,  0.5f, 0.0f,  // top right
      0.5f, -0.5f, 0.0f,  // bottom right
@@ -146,13 +156,7 @@ int main(int argc, char** argv)
 		0, 1, 3,   // first triangle
 		1, 2, 3    // second triangle
 	};  
-
-    // Create the Vertex Array Object
-    u32 VAO;
-    glGenVertexArrays(1, &VAO);
-    // Bind the VAO - For some reason, the VAO should be bound before the VBO
-	// even though in a trivial example with one of each, it doesn't matter
-    glad_glBindVertexArray(VAO);
+	*/
 
     // Create VBO 
     u32 VBO;
@@ -162,6 +166,11 @@ int main(int argc, char** argv)
     // Copy buffer to GPU
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // Create the Vertex Array Object
+    u32 VAO;
+    glGenVertexArrays(1, &VAO);
+    // Bind the VAO
+    glad_glBindVertexArray(VAO);
     // Describe the VAO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void*) 0);
     // Enable the VAO
@@ -169,12 +178,12 @@ int main(int argc, char** argv)
     /*** End OpenGL Tutorial ***/
 
 	// Create Element Buffer Object
-	u32 EBO;
-	glGenBuffers(1, &EBO);
+	//u32 EBO;
+	//glGenBuffers(1, &EBO);
 
 	// Bind EBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     while(!g_quit)
     {
@@ -190,8 +199,8 @@ int main(int argc, char** argv)
         //Render
         glUseProgram(shader_program);
         glBindVertexArray(VAO);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         SDL_GL_SwapWindow(g_window);
     }

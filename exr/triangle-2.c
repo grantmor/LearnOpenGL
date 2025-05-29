@@ -120,21 +120,27 @@ int main(int argc, char** argv)
 
     //TODO: Log shader compilation failure
 
-    glUseProgram(shader_program);
+    //glUseProgram(shader_program);
 
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
 
-/*
-    f32 verticies[] =
+    f32 vertices1[] =
     {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
-    };
-*/
+        -1.5f, -0.5f, 0.0f,
+         0.0f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f
+	};
 
+	f32 vertices2[] =
+	{
+        1.5f, -0.5f, 0.0f,
+         0.0f, -0.5f, 0.0f,
+        1.0f,  0.5f, 0.0f
+    };
+
+	/*
 	f32 vertices[] = {
      0.5f,  0.5f, 0.0f,  // top right
      0.5f, -0.5f, 0.0f,  // bottom right
@@ -146,35 +152,52 @@ int main(int argc, char** argv)
 		0, 1, 3,   // first triangle
 		1, 2, 3    // second triangle
 	};  
-
+	*/
     // Create the Vertex Array Object
-    u32 VAO;
-    glGenVertexArrays(1, &VAO);
-    // Bind the VAO - For some reason, the VAO should be bound before the VBO
-	// even though in a trivial example with one of each, it doesn't matter
-    glad_glBindVertexArray(VAO);
+    u32 VAO1;
+    glGenVertexArrays(1, &VAO1);
+    // Bind the VAO
+    glad_glBindVertexArray(VAO1);
 
     // Create VBO 
-    u32 VBO;
-    glGenBuffers(1, &VBO);
+    u32 VBO1;
+    glGenBuffers(1, &VBO1);
     // Only one buffer of each type can be bound at once
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO1);
     // Copy buffer to GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
 
     // Describe the VAO
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void*) 0);
     // Enable the VAO
     glad_glEnableVertexAttribArray(0);
-    /*** End OpenGL Tutorial ***/
+
+    // Create the Vertex Array Object
+    u32 VAO2;
+    glGenVertexArrays(1, &VAO2);
+    // Bind the VAO
+    glad_glBindVertexArray(VAO2);
+
+    // Create VBO 
+    u32 VBO2;
+    glGenBuffers(1, &VBO2);
+    // Only one buffer of each type can be bound at once
+    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+    // Copy buffer to GPU
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+
+    // Describe the VAO
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void*) 0);
+    // Enable the VAO
+    glad_glEnableVertexAttribArray(0);
 
 	// Create Element Buffer Object
-	u32 EBO;
-	glGenBuffers(1, &EBO);
+	//u32 EBO;
+	//glGenBuffers(1, &EBO);
 
 	// Bind EBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     while(!g_quit)
     {
@@ -189,9 +212,11 @@ int main(int argc, char** argv)
 
         //Render
         glUseProgram(shader_program);
-        glBindVertexArray(VAO);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(VAO1);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(VAO2);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         SDL_GL_SwapWindow(g_window);
     }
