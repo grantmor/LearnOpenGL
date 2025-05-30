@@ -2,6 +2,8 @@
 #include <SDL3/SDL_iostream.h>
 #include <SDL3/SDL_video.h>
 
+#include <math.h>
+
 #include "sl_type.h"
 
 #include "../include/glad.c"
@@ -136,10 +138,11 @@ int main(int argc, char** argv)
 */
 
 	f32 vertices[] = {
-     0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left 
+		// Positions		// Colors
+    	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // top right
+    	 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f, // bottom right
+    	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom left
+    	-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 0.0f // top left 
 	};
 
 	u32 indices[] = {  // note that we start from 0!
@@ -161,12 +164,18 @@ int main(int argc, char** argv)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // Copy buffer to GPU
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Describe the VAO
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(f32), (void*) 0);
-    // Enable the VAO
+	
+	// Calculate stride for VAO
+	u32 va_stride = 6 * sizeof(f32);
+    // Describe the VAO position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, va_stride, (void*) 0);
+    // Enable the VAO position attribute
     glad_glEnableVertexAttribArray(0);
-    /*** End OpenGL Tutorial ***/
+
+    // Describe the VAO color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, va_stride, (void*) (3 * sizeof(f32)));
+    // Enable the VAO color attribute
+    glad_glEnableVertexAttribArray(1);
 
 	// Create Element Buffer Object
 	u32 EBO;
@@ -188,7 +197,12 @@ int main(int argc, char** argv)
         }
 
         //Render
+		f32 time_value = SDL_GetTicks() / 1000.0;
+		f32 red_value = sin(time_value) / 2.0f + 0.5f;
+		usize vertex_color_location = glad_glGetUniformLocation(shader_program, "uniColor");
         glUseProgram(shader_program);
+		glUniform4f(vertex_color_location, red_value, 0.0, 0.0, 1.0);
+
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
