@@ -7,11 +7,19 @@
 #include "sl_type.h"
 
 #include "../include/glad.c"
+#define STB_IMAGE_IMPLEMENTATION
+#include "../include/stb_image.h"
 
 typedef struct {
     u32 width;
     u32 height;
 } Window;
+
+typedef struct {
+	i32 width;
+	i32 height;
+	i32 num_channels;
+} Texture;
 
 static SDL_Window* g_window = NULL;
 static SDL_GLContext g_ogl_ctx = NULL;
@@ -72,6 +80,53 @@ int main(int argc, char** argv)
 
     /*** OpenGL Tutorial ***/
 
+	// Load Texture Image 1
+	Texture container;
+	//i32 width, height, num_channels;
+	unsigned char* container_image = stbi_load("res/container.jpg", &container.width, &container.height, &container.num_channels, 0);
+
+	u32 texture1;
+	glGenTextures(1, &texture1);
+
+	//Activate the texture unit (NOT NECESSARY IF ONLY ONE TEXTURE - it will auto map to texture unit 0 (probably))
+	glActiveTexture(GL_TEXTURE0);
+	// Bind Texture
+	glBindTexture(GL_TEXTURE_2D, texture1);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// Generate Texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, container.width, container.height, 0, GL_RGB, GL_UNSIGNED_BYTE, container_image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	free(container_image);
+
+	// Load Texture Image 2
+	Texture smile;
+	//i32 width, height, num_channels;
+	stbi_set_flip_vertically_on_load(true); 
+	unsigned char* smile_image = stbi_load("res/awesomeface.png", &smile.width, &smile.height, &smile.num_channels, 0);
+
+	u32 texture2;
+	glGenTextures(1, &texture2);
+
+	//Activate the texture unit (NOT NECESSARY IF ONLY ONE TEXTURE - it will auto map to texture unit 0 (probably))
+	glActiveTexture(GL_TEXTURE1);
+	// Bind Texture
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	// Generate Texture
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, smile.width, smile.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, smile_image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	free(smile_image);
+
     // Load Shaders
     usize vs_code_size = 0;
     const char* vertex_shader_source = SDL_LoadFile("res/vertex.glsl", &vs_code_size);
@@ -123,6 +178,8 @@ int main(int argc, char** argv)
     //TODO: Log shader compilation failure
 
     glUseProgram(shader_program);
+	glUniform1i(glGetUniformLocation(shader_program, "container"), 0);
+	glUniform1i(glGetUniformLocation(shader_program, "smile"), 1);
 
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
@@ -138,11 +195,11 @@ int main(int argc, char** argv)
 */
 
 	f32 vertices[] = {
-		// Positions		// Colors
-    	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // top right
-    	 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f, // bottom right
-    	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom left
-    	-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 0.0f // top left 
+		// Positions		 Colors				UVs
+    	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,	1.0, 1.0, // top right
+    	 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f, 	1.0, 0.0, // bottom right
+    	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 	0.0, 0.0, // bottom left
+    	-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 0.0f, 	0.0, 1.0 // top left 
 	};
 
 	u32 indices[] = {  // note that we start from 0!
@@ -166,7 +223,7 @@ int main(int argc, char** argv)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	
 	// Calculate stride for VAO
-	u32 va_stride = 6 * sizeof(f32);
+	u32 va_stride = 8 * sizeof(f32);
     // Describe the VAO position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, va_stride, (void*) 0);
     // Enable the VAO position attribute
@@ -176,6 +233,11 @@ int main(int argc, char** argv)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, va_stride, (void*) (3 * sizeof(f32)));
     // Enable the VAO color attribute
     glad_glEnableVertexAttribArray(1);
+
+    // Describe the VAO Texture Coordinate attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, va_stride, (void*) (6 * sizeof(f32)));
+    // Enable the VAO color attribute
+    glad_glEnableVertexAttribArray(2);
 
 	// Create Element Buffer Object
 	u32 EBO;
