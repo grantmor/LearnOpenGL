@@ -198,7 +198,7 @@ int main(int argc, char** argv)
          0.0f,  0.5f, 0.0f
     };
 */
-
+/*
 	f32 vertices[] = {
 		// Positions		 Colors				UVs
     	 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,	1.0, 1.0, // top right
@@ -206,6 +206,64 @@ int main(int argc, char** argv)
     	-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 	0.0, 0.0, // bottom left
     	-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 0.0f, 	0.0, 1.0 // top left 
 	};
+		*/
+float vertices[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+
+	vec3 cubePositions[] = {
+		{0.1f,  0.1f,  0.1f}, 
+		{-2.0f,  5.0f, -15.0f}, 
+		{-1.5f, -2.2f, -2.5f},  
+		{2.8f, -2.0f, -12.3f},  
+		{-2.4f, -0.4f, -3.5f},  
+		{1.7f,  3.0f, -7.5f},  
+		{-0.3f, -2.0f, -2.5f},  
+		{3.5f,  2.0f, -2.5f}, 
+		{0.5f,  1.2f, -1.5f}, 
+		{1.3f,  1.0f, -1.5f}  
+	};
+
 
 	u32 indices[] = {  // note that we start from 0!
 		0, 1, 3,   // first triangle
@@ -228,21 +286,22 @@ int main(int argc, char** argv)
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	
 	// Calculate stride for VAO
-	u32 va_stride = 8 * sizeof(f32);
+	//u32 va_stride = 8 * sizeof(f32);
+	u32 va_stride = 5 * sizeof(f32);
     // Describe the VAO position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, va_stride, (void*) 0);
     // Enable the VAO position attribute
     glad_glEnableVertexAttribArray(0);
 
     // Describe the VAO color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, va_stride, (void*) (3 * sizeof(f32)));
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, va_stride, (void*) (3 * sizeof(f32)));
     // Enable the VAO color attribute
-    glad_glEnableVertexAttribArray(1);
+    //glad_glEnableVertexAttribArray(1);
 
     // Describe the VAO Texture Coordinate attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, va_stride, (void*) (6 * sizeof(f32)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, va_stride, (void*) (3 * sizeof(f32)));
     // Enable the VAO color attribute
-    glad_glEnableVertexAttribArray(2);
+    glad_glEnableVertexAttribArray(1);
 
 	// Create Element Buffer Object
 	u32 EBO;
@@ -252,10 +311,14 @@ int main(int argc, char** argv)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+
+	// Enable Depth Buffer
+	glEnable(GL_DEPTH_TEST);
+
     while(!g_quit)
     {
         glClearColor(0,0,1.0,1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
         while(SDL_PollEvent(&e))
         {
@@ -267,35 +330,68 @@ int main(int argc, char** argv)
 		f32 time_value = SDL_GetTicks() / 1000.0;
 		f32 red_value = sin(time_value) / 2.0f + 0.5f;
 		usize vertex_color_location = glad_glGetUniformLocation(shader_program, "uniColor");
-		usize transform_location = glGetUniformLocation(shader_program, "transform");
+		usize model_location = glGetUniformLocation(shader_program, "model");
+		usize view_location = glGetUniformLocation(shader_program, "view");
+		usize projection_location = glGetUniformLocation(shader_program, "projection");
         glUseProgram(shader_program);
 		glUniform4f(vertex_color_location, red_value, 0.0, 0.0, 1.0);
-         // Step 1: Original vector
+
+        // Model Transformation Matrix
         vec4 vec = {1.0f, 0.0f, 0.0f, 1.0f};
         vec4 result;
 
-        // Step 2: Create transformation matrix (identity)
-        mat4 trans;
+        mat4 model_txfrm;
         f32 xFormFactor = SDL_GetTicks() / 500.0; 
-        glm_mat4_identity(trans);
+		//f32 xFormFactor = glm_rad(-55.0);
+        // f32 xFormFactor = 1.0; 
+        glm_mat4_identity(model_txfrm);
 
-        // Step 3: Apply translation (translate by (1, 1, 0))
-        glm_translate(trans, (vec3){0.0f, 0.0f, 0.0f});
+        // Translate
+        glm_translate(model_txfrm, (vec3){0.0f, 0.0f, 0.0f});
 
-        vec4 z_axis = {0.0, 0.0, 1.0, 0.0};
-        // Step 4: Apply rotation around Z (90 degrees)
-        glm_rotate_z(trans, xFormFactor, trans); // GLM_PI_2 is π/2 (90 degrees)
+		// Rotate
+        //vec4 z_axis = {0.0, 0.0, 1.0, 0.0};
+        //glm_rotate_x(model_txfrm, glm_rad(-55.0), model_txfrm); // GLM_PI_2 is π/2 (90 degrees)
+        //glm_rotate_x(model_txfrm, glm_rad(-55.0), model_txfrm); // GLM_PI_2 is π/2 (90 degrees)
+        glm_rotate_x(model_txfrm, xFormFactor, model_txfrm); // GLM_PI_2 is π/2 (90 degrees)
 
-        // Step 5: Apply scaling (scale x2, y2, z1)
-        glm_scale(trans, (vec3){sin(xFormFactor) +1.0, sin(xFormFactor)+1.0, 1.0f});
+		// Scale
+        //glm_scale(model_txfrm, (vec3){sin(xFormFactor) +1.0, sin(xFormFactor)+1.0, 1.0f});
+        //glm_scale(model_txfrm, (vec3){sin(xFormFactor) +1.0, sin(xFormFactor)+1.0, 1.0f});
 
-        // Step 6: Transform the vector
-        glm_mat4_mulv(trans, vec, result);
-		glUniformMatrix4fv(transform_location, 1, GL_FALSE, (GLfloat*)trans);
+        // Apply Transformation to vertices
+        glm_mat4_mulv(model_txfrm, vec, result);
+		glUniformMatrix4fv(model_location, 1, GL_FALSE, (GLfloat*)model_txfrm);
+
+		// View Transformation Matrix
+		mat4 view_txfrm;
+		glm_mat4_identity(view_txfrm);
+		glm_translate(view_txfrm, (vec3){0.0, 0.0, -3.0});
+		glUniformMatrix4fv(view_location, 1, GL_FALSE, (GLfloat*)view_txfrm);
+
+		// Projection Matrix
+		mat4 proj_txfrm;
+		glm_perspective(glm_rad(45.0), (f32)window.width / (f32)window.height, 0.01, 100.0, proj_txfrm);
+		glUniformMatrix4fv(projection_location, 1, GL_FALSE, (GLfloat*)proj_txfrm);
 
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		
+		for (u32 i=0; i < 10; i++)
+		{
+        	//glm_translate(model_txfrm, (vec3){i* 0.1f, 0.0f, 0.0f});
+			glm_mat4_identity(model_txfrm);
+        	glm_translate(model_txfrm, cubePositions[i]);
+        	glm_rotate_x(model_txfrm, glm_rad(27.0 * i), model_txfrm); // GLM_PI_2 is π/2 (90 degrees)
+        	glm_rotate_y(model_txfrm, glm_rad(33.0 * i), model_txfrm); // GLM_PI_2 is π/2 (90 degrees)
+        	glm_rotate_z(model_txfrm, glm_rad(18.0 * i), model_txfrm); // GLM_PI_2 is π/2 (90 degrees)
+			glUniformMatrix4fv(model_location, 1, GL_FALSE, (GLfloat*)model_txfrm);
+
+
+        	glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
         SDL_GL_SwapWindow(g_window);
     }
