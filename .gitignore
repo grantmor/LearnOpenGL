@@ -1,6 +1,8 @@
 #Project Specific
 ogl
 ex
+include/linmath
+include/cglm-master
 
 # Prerequisites
 *.d

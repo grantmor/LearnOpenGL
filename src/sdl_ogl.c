@@ -1,5 +1,6 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_iostream.h>
+#include <SDL3/SDL_timer.h>
 #include <SDL3/SDL_video.h>
 
 #include <math.h>
@@ -9,6 +10,7 @@
 #include "../include/glad.c"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include/stb_image.h"
+#include "../include/cglm-master/include/cglm/cglm.h"
 
 typedef struct {
     u32 width;
@@ -181,6 +183,9 @@ int main(int argc, char** argv)
 	glUniform1i(glGetUniformLocation(shader_program, "container"), 0);
 	glUniform1i(glGetUniformLocation(shader_program, "smile"), 1);
 
+    /*****?*/
+
+	// Clean up shaders
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
@@ -262,8 +267,31 @@ int main(int argc, char** argv)
 		f32 time_value = SDL_GetTicks() / 1000.0;
 		f32 red_value = sin(time_value) / 2.0f + 0.5f;
 		usize vertex_color_location = glad_glGetUniformLocation(shader_program, "uniColor");
+		usize transform_location = glGetUniformLocation(shader_program, "transform");
         glUseProgram(shader_program);
 		glUniform4f(vertex_color_location, red_value, 0.0, 0.0, 1.0);
+         // Step 1: Original vector
+        vec4 vec = {1.0f, 0.0f, 0.0f, 1.0f};
+        vec4 result;
+
+        // Step 2: Create transformation matrix (identity)
+        mat4 trans;
+        f32 xFormFactor = SDL_GetTicks() / 500.0; 
+        glm_mat4_identity(trans);
+
+        // Step 3: Apply translation (translate by (1, 1, 0))
+        glm_translate(trans, (vec3){0.0f, 0.0f, 0.0f});
+
+        vec4 z_axis = {0.0, 0.0, 1.0, 0.0};
+        // Step 4: Apply rotation around Z (90 degrees)
+        glm_rotate_z(trans, xFormFactor, trans); // GLM_PI_2 is π/2 (90 degrees)
+
+        // Step 5: Apply scaling (scale x2, y2, z1)
+        glm_scale(trans, (vec3){sin(xFormFactor) +1.0, sin(xFormFactor)+1.0, 1.0f});
+
+        // Step 6: Transform the vector
+        glm_mat4_mulv(trans, vec, result);
+		glUniformMatrix4fv(transform_location, 1, GL_FALSE, (GLfloat*)trans);
 
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
